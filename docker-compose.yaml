@@ -1,0 +1,105 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:jammy
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_SERVICE_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_SERVICE_PASSWORD
+    ports:
+      - $MONGODB_SERVICE_PORT:27017
+    volumes:
+      - mongo_db:/data/db
+    networks:
+      - shared
+
+  app-store:
+    container_name: app-store
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: $ENV
+    depends_on:
+      - app-supplier
+    restart: unless-stopped
+    ports:
+      - $STORE_SERVICE_PORT:$STORE_SERVICE_PORT
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=$ENV
+      - SERVICE_KIND=STORE
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - shared
+    stdin_open: true
+    tty: true
+
+  app-supplier:
+    container_name: app-supplier
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: $ENV
+    depends_on:
+      - mongo
+      - rabbitmq
+    restart: unless-stopped
+    ports:
+      - $SUPPLIER_SERVICE_PORT:$SUPPLIER_SERVICE_PORT
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=$ENV
+      - SERVICE_KIND=SUPPLIER
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - shared
+    stdin_open: true
+    tty: true
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=$RABBITMQ_SERVICE_USERNAME
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_SERVICE_PASSWORD
+    ports:
+      - $RABBITMQ_SERVICE_PORT:5672
+      - '15672:15672'
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+    networks:
+      - shared
+
+  app-documentation:
+    container_name: app-documentation
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: $ENV
+    depends_on:
+      - app-store
+    restart: unless-stopped
+    ports:
+      - $DOCUMENTATION_SERVICE_PORT:$DOCUMENTATION_SERVICE_PORT
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=$ENV
+      - SERVICE_KIND=DOCUMENTATION
+
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - shared
+
+volumes:
+  mongo_db:
+  rabbitmq_data:
+
+networks:
+  shared:
+    driver: bridge

@@ -72,4 +72,4 @@ curl -X 'POST' \
 | RabbitMQ        | rabbitmq          | [http://127.0.0.1:5672]  |
 | RabbitMQ(panel) | rabbitmq          | [http://127.0.0.1:15672] |
 
-> default credentials is stored in in .env.example file
+> default credentials is stored in .env.example file

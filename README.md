@@ -31,6 +31,12 @@ copy `.env.sample` to `.env`:
 cp .env.sample .env
 ```
 
+install project:
+
+```
+npm i
+```
+
 run the bash file:
 
 ```

@@ -63,8 +63,13 @@ curl -X 'POST' \
 
 ## More Info
 
-| service       | container name    | address                 |
-| ------------- | ----------------- | ----------------------- |
-| Documentation | app-documentation | [http://127.0.0.1:3000] |
-| Store         | app-store         | [http://127.0.0.1:4000] |
-| Supplier      | app-supplier      | [http://127.0.0.1:5000] |
+| service         | container name    | address                  |
+| --------------- | ----------------- | ------------------------ |
+| Documentation   | app-documentation | [http://127.0.0.1:3000]  |
+| Store           | app-store         | [http://127.0.0.1:4000]  |
+| Supplier        | app-supplier      | [http://127.0.0.1:5000]  |
+| MongoDB         | mongo             | [http://127.0.0.1:27017] |
+| RabbitMQ        | rabbitmq          | [http://127.0.0.1:5672]  |
+| RabbitMQ(panel) | rabbitmq          | [http://127.0.0.1:15672] |
+
+> default credentials is stored in in .env.example file
